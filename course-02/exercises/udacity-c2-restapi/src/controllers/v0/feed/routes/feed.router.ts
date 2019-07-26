@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { FeedItem } from '../models/FeedItem';
 import { requireAuth } from '../../users/routes/auth.router';
 import * as AWS from '../../../../aws';
+import sequelize = require('sequelize');
 
 const router: Router = Router();
 
@@ -28,8 +29,19 @@ router.get('/:id',
 router.patch('/:id', 
     requireAuth, 
     async (req: Request, res: Response) => {
-        //@TODO try it yourself
-        res.send(500).send("not implemented")
+        let { id } = req.params;
+        let { caption, url } = req.body;
+
+        const item = await FeedItem.findByPk(id);
+        if(!item)
+            res.status(404).send("Could not locate feed item");
+
+        await item.update({
+            caption: caption,
+            url: url
+        });
+
+        res.status(201).send(item);
 });
 
 
