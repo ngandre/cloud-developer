@@ -1,6 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import { Http2SecureServer } from 'http2';
+import http from 'http';
+
 
 (async () => {
 
@@ -28,6 +31,39 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
+  app.get("/filteredimage", async (req, res) => {
+
+    var { image_url } = req.query;
+    
+    // check query param
+    if(!image_url) {
+      res.status(400).send("Must provide image_url");
+      return;
+    }
+
+    // apply filter
+    let filteredImagePath: string;
+    try {
+      filteredImagePath = await filterImageFromURL(image_url);
+    }
+    catch(e) {
+      console.log(e);
+    }
+
+    // ensure filter was applied and saved out 
+    if(!filteredImagePath) {
+      res.status(400).send("Unable to apply filter to supplied url");
+      return;
+    }
+      
+    // send the file and clean up local tmp
+    res.sendFile(filteredImagePath, async (err) => {
+      if(err) {
+        console.log(err);
+      }
+      await deleteLocalFiles([filteredImagePath]);
+    });
+   });
 
   //! END @TODO1
   

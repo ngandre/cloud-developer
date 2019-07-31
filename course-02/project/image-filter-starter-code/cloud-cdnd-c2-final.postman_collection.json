@@ -1,12 +1,31 @@
 {
 	"info": {
-		"_postman_id": "4bcf1909-8996-44b7-be35-b130ab03d12f",
+		"_postman_id": "13f6360e-0272-4e0b-805a-a227057f87d4",
 		"name": "cloud-cdnd-c2-final",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "http://localhost:8082/filteredimage?image_url=https://timedotcom.files.wordpress.com/2019/03/kitten-report.jpg",
+			"name": "/filteredimage - success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9b82151d-19a7-4044-a39b-fe11e04b394f",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response Body Not Empty\", function () {",
+							"   pm.response.to.be.withBody; ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -26,6 +45,69 @@
 						}
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "/filteredimage - bad url",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "70388ff7-d469-4e58-bbd0-5723e082677e",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{HOST}}/filteredimage?image_url=https://google.com/notrealblahbawedlkjawer.jpeg",
+					"protocol": "http",
+					"host": [
+						"{{HOST}}"
+					],
+					"path": [
+						"filteredimage"
+					],
+					"query": [
+						{
+							"key": "image_url",
+							"value": "https://google.com/notrealblahbawedlkjawer.jpeg"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/filteredimage - no url",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "798fae3a-0abb-4a37-8ce2-98b6c10e9c9a",
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://{{HOST}}/filteredimage"
 			},
 			"response": []
 		}
